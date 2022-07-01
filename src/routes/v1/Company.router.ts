@@ -15,7 +15,14 @@ export default function (companyService: any) {
 
     return companyService
       .create({ name, parentId, active: true })
-      .then((newCompany: Company) => res.json(newCompany).status(201))
+      .then((newCompany: Company) => res.status(201).json(newCompany))
+      .catch(next);
+  });
+
+  router.delete('/:id', (req: Request, res: Response, next: any) => {
+    return companyService
+      .delete(req.params.id)
+      .then(() => res.status(200).json())
       .catch(next);
   });
   return router;

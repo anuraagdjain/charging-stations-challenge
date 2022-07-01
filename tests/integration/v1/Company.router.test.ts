@@ -49,15 +49,16 @@ describe('Companies Router v1 Integration', function () {
     });
   });
 
-  describe.only('POST /companies', function () {
+  describe('POST /companies', function () {
     it('Successful - create a company with null parentId & sets active as true', async function () {
       const payload = {
         name: 'Company 5',
         parentId: null,
       };
 
-      const { data } = await axios.post(API_URL, payload);
+      const { data, status } = await axios.post(API_URL, payload);
 
+      expect(status).to.be.eq(201);
       expect(data).to.have.keys(['id', 'name', 'parentId', 'createdAt', 'active']);
       expect(data.name).to.be.eq(payload.name);
       expect(data.parentId).to.be.eq(payload.parentId);
@@ -75,6 +76,47 @@ describe('Companies Router v1 Integration', function () {
       } catch (err: any) {
         expect(err.response.status).to.be.eq(500);
         expect(err.response.data.error).to.contain('Duplicate entry');
+      }
+    });
+  });
+
+  describe('DELETE /companies/:id', function () {
+    it('Successful - Delete a company in the database', async function () {
+      const companyId = 3;
+      let [result] = await this.db.query('SELECT * FROM companies where id = ?', [companyId]);
+
+      expect(result.id).to.be.eq(companyId);
+
+      const { status } = await axios.delete(`${API_URL}/${companyId}`);
+      expect(status).to.be.eq(200);
+
+      result = await this.db.query('SELECT * FROM companies where id = ?', [companyId]);
+      expect(result.length).to.be.eq(0);
+    });
+
+    it('Successful - No operations for missing companyId', async function () {
+      const companyId = 999;
+
+      let result = await this.db.query('SELECT * FROM companies;');
+      expect(result.length).to.be.eq(3);
+
+      const { status } = await axios.delete(`${API_URL}/${companyId}`);
+
+      expect(status).to.be.eq(200);
+
+      result = await this.db.query('SELECT * FROM companies;');
+      expect(result.length).to.be.eq(3);
+    });
+
+    it('Error - Returns error when deleting a company with child companies', async function () {
+      const companyId = 1;
+
+      try {
+        await axios.delete(`${API_URL}/${companyId}`);
+        expect.fail('Cannot delete company 1 as child exists');
+      } catch (err: any) {
+        expect(err.response.status).to.be.eq(500);
+        expect(err.response.data.error).to.eq('Cannot delete company as child comapnies exist!');
       }
     });
   });
