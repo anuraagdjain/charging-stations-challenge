@@ -48,4 +48,34 @@ describe('Companies Router v1 Integration', function () {
       });
     });
   });
+
+  describe.only('POST /companies', function () {
+    it('Successful - create a company with null parentId & sets active as true', async function () {
+      const payload = {
+        name: 'Company 5',
+        parentId: null,
+      };
+
+      const { data } = await axios.post(API_URL, payload);
+
+      expect(data).to.have.keys(['id', 'name', 'parentId', 'createdAt', 'active']);
+      expect(data.name).to.be.eq(payload.name);
+      expect(data.parentId).to.be.eq(payload.parentId);
+    });
+
+    it('Error - fails to create a company with existing name', async function () {
+      const payload = {
+        name: 'Company 1',
+        parentId: null,
+      };
+
+      try {
+        await axios.post(API_URL, payload);
+        expect.fail('Company 1 already exists');
+      } catch (err: any) {
+        expect(err.response.status).to.be.eq(500);
+        expect(err.response.data.error).to.contain('Duplicate entry');
+      }
+    });
+  });
 });

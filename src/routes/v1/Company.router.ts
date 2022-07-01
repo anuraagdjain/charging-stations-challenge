@@ -9,5 +9,14 @@ export default function (companyService: any) {
       .then((companies: [Company]) => res.json(companies))
       .catch(next);
   });
+
+  router.post('/', (req: Request, res: Response, next: any) => {
+    const { name, parentId } = req.body;
+
+    return companyService
+      .create({ name, parentId, active: true })
+      .then((newCompany: Company) => res.json(newCompany).status(201))
+      .catch(next);
+  });
   return router;
 }

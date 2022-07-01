@@ -5,7 +5,7 @@ export class Company {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column()
+  @Column({ unique: true })
   name!: string;
 
   @Column({ name: 'parent_id' })
@@ -14,6 +14,6 @@ export class Company {
   @Column()
   active!: Boolean;
 
-  @Column({ name: 'created_at' })
+  @Column({ name: 'created_at', default: 'NOW()' })
   createdAt!: Date;
 }
