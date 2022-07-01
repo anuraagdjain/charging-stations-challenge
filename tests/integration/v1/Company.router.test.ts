@@ -120,4 +120,25 @@ describe('Companies Router v1 Integration', function () {
       }
     });
   });
+
+  describe('PUT /companies/:id', function () {
+    it('Successful - Update a company in the database', async function () {
+      const companyId = 3;
+      const oldName = 'Company 3';
+      const payload = { name: 'New Company 3', parentId: null };
+
+      const [beforeUpdate] = await this.db.query('SELECT * FROM companies where id = ?', [companyId]);
+
+      const { status } = await axios.put(`${API_URL}/${companyId}`, payload);
+      expect(status).to.be.eq(200);
+
+      expect(beforeUpdate.name).to.be.eq(oldName);
+      expect(beforeUpdate.parent_id).to.be.eq(1);
+
+      const [afterUpdate] = await this.db.query('SELECT * FROM companies where id = ?', [companyId]);
+
+      expect(afterUpdate.name).to.be.eq(payload.name);
+      expect(afterUpdate.parent_id).to.be.eq(payload.parentId);
+    });
+  });
 });

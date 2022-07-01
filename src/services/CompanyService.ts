@@ -27,5 +27,11 @@ export default (DB: DataSource) => {
         throw err;
       });
     },
+    update: (id: number, payload: Partial<Company>) =>
+      companyRepository.update(id, payload).catch((err: any) => {
+        logger.error(`Failed to update company ${err}`);
+        err.status = 500;
+        throw err;
+      }),
   };
 };
