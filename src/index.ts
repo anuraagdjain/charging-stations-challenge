@@ -21,6 +21,7 @@ MySqlDataSource.initialize().then((DB: DataSource) => {
   const v1Routes = V1Routes(services);
 
   app.use('/api/v1/companies', v1Routes.companyRouter);
+  app.use('/api/v1/stations', v1Routes.stationRouter);
 
   app.use(function (err: any, req: Request, res: Response, next: any) {
     logger.error(`Fatal error ${err.message} - ${err.stack}`);
