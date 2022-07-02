@@ -9,6 +9,7 @@ export default (DB: DataSource) => {
 
   return {
     find: (id: number) => stationRepository.findOne({ where: { id } }),
+    findWithStationType: (opts: Object) => stationRepository.find({ ...opts, relations: ['stationType'] }),
     get: () => stationRepository.find(),
     create: (payload: Partial<Station>) =>
       stationRepository.save(payload).catch((err: any) => {
