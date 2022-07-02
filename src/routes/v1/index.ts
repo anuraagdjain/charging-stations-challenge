@@ -4,7 +4,7 @@ import StationTypeRouter from './StationType.router';
 
 export default function (services: any) {
   return {
-    companyRouter: CompanyRouter(services.companyService),
+    companyRouter: CompanyRouter(services.companyService, services.stationService),
     stationRouter: StationRouter(services.stationService),
     stationTypeRouter: StationTypeRouter(services.stationTypeService),
   };

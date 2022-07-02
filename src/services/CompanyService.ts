@@ -9,6 +9,7 @@ export default (DB: DataSource) => {
 
   return {
     find: (id: number) => companyRepository.findOne({ where: { id } }),
+    findWithChildrens: (id: number) => companyRepository.find({ where: [{ id }, { parentId: id }] }),
     get: () => companyRepository.find(),
     create: (payload: Partial<Company>) =>
       companyRepository.save(payload).catch((err: any) => {

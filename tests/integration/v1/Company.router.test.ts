@@ -117,4 +117,21 @@ describe('Companies Router v1 Integration', function () {
       expect(afterUpdate.parent_id).to.be.eq(payload.parentId);
     });
   });
+
+  describe('GET /companies/:id/stations', function () {
+    it("Successful - get a company's & it's childs stations data", async function () {
+      const companyId = 1;
+      const { data } = await axios.get(`${API_URL}/${companyId}/stations`);
+
+      expect(data).to.be.an('array');
+      expect(data.length).to.be.eq(2);
+
+      data.forEach((row: any) => {
+        expect(row).to.have.keys(['stationId', 'stationName', 'maxPower']);
+        expect(row.stationId).to.be.an('number');
+        expect(row.stationName).to.be.a('string');
+        expect(typeof row.maxPower).to.be.oneOf(['number', 'object']);
+      });
+    });
+  });
 });
