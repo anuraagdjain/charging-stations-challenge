@@ -22,6 +22,7 @@ MySqlDataSource.initialize().then((DB: DataSource) => {
 
   app.use('/api/v1/companies', v1Routes.companyRouter);
   app.use('/api/v1/stations', v1Routes.stationRouter);
+  app.use('/api/v1/station-types', v1Routes.stationTypeRouter);
 
   app.use(function (err: any, req: Request, res: Response, next: any) {
     logger.error(`Fatal error ${err.message} - ${err.stack}`);
