@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 @Entity({ name: 'stations' })
-export class Company {
+export class Station {
   @PrimaryGeneratedColumn()
   id!: number;
 
@@ -9,7 +9,7 @@ export class Company {
   name!: string;
 
   @Column({ name: 'company_id' })
-  companyId?: number;
+  companyId!: number;
 
   @Column()
   active!: Boolean;

@@ -1,35 +1,35 @@
 import { Request, Response, Router } from 'express';
-import { Company } from '../../db/entities/Company.entity';
+import { Station } from '../../db/entities/Station.entity';
 const router = Router();
 
-export default function (companyService: any) {
+export default function (stationService: any) {
   router.get('/', (_: Request, res: Response, next: any) => {
-    return companyService
+    return stationService
       .get()
-      .then((companies: [Company]) => res.json(companies))
+      .then((stations: [Station]) => res.json(stations))
       .catch(next);
   });
 
   router.post('/', (req: Request, res: Response, next: any) => {
-    const { name, parentId } = req.body;
+    const { name, companyId } = req.body;
 
-    return companyService
-      .create({ name, parentId, active: true })
-      .then((newCompany: Company) => res.status(201).json(newCompany))
+    return stationService
+      .create({ name, companyId, active: true })
+      .then((newStation: Station) => res.status(201).json(newStation))
       .catch(next);
   });
 
   router.delete('/:id', (req: Request, res: Response, next: any) => {
-    return companyService
+    return stationService
       .delete(req.params.id)
       .then(() => res.status(200).json())
       .catch(next);
   });
 
   router.put('/:id', (req: Request, res: Response, next: any) => {
-    const { name, parentId } = req.body;
-    return companyService
-      .update(req.params.id, { name, parentId })
+    const { name, companyId } = req.body;
+    return stationService
+      .update(req.params.id, { name, companyId })
       .then(() => res.status(200).json())
       .catch(next);
   });

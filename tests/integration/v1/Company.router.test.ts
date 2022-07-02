@@ -7,30 +7,6 @@ describe('Companies Router v1 Integration', function () {
   const { host, port } = config.get('server');
   const API_URL = `http://${host}:${port}/api/v1/companies`;
 
-  beforeEach('seed', async function () {
-    await this.db.getRepository(Company).save([
-      {
-        name: 'Company 1',
-        active: true,
-        parentId: null,
-      },
-      {
-        name: 'Company 2',
-        active: true,
-        parentId: 1,
-      },
-      {
-        name: 'Company 3',
-        active: true,
-        parentId: 1,
-      },
-    ]);
-  });
-
-  afterEach('cleanup', function () {
-    return this.db.getRepository(Company).clear();
-  });
-
   describe('GET /companies', function () {
     it('Successful - gets all companies from the database', async function () {
       const { data } = await axios.get(API_URL);
