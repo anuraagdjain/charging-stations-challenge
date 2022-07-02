@@ -1,6 +1,7 @@
 import { MySqlDataSource } from '../../src/db';
 import { Company } from '../../src/db/entities/Company.entity';
 import { Station } from '../../src/db/entities/Station.entity';
+import { StationType } from '../../src/db/entities/StationType.entity';
 
 before('Chore', async function () {
   this.db = await MySqlDataSource.initialize();
@@ -37,10 +38,19 @@ beforeEach('seed', async function () {
       active: true,
     },
   ]);
+
+  await this.db.getRepository(StationType).save([
+    {
+      name: 'StationType 2',
+      stationId: 2,
+      maxPower: 15,
+    },
+  ]);
 });
 
 afterEach('cleanup', async function () {
   await this.db.query('SET FOREIGN_KEY_CHECKS = 0;');
+  await this.db.getRepository(StationType).clear();
   await this.db.getRepository(Station).clear();
   await this.db.getRepository(Company).clear();
   await this.db.query('SET FOREIGN_KEY_CHECKS = 1;');
