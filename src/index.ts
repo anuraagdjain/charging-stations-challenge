@@ -10,9 +10,7 @@ const app: Express = express();
 const port = config.get('server.port');
 
 app.use(express.json());
-app.get('/healthcheck', (req: Request, res: Response, next: any) => {
-  next(new Error('test'));
-});
+app.get('/healthcheck', (req: Request, res: Response, next: any) => res.json({ time: new Date().getTime() }));
 
 MySqlDataSource.initialize().then((DB: DataSource) => {
   logger.debug('Connected to database');
