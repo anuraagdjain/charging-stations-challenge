@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne } from 'typeorm';
+import { StationType } from './StationType.entity';
 
 @Entity({ name: 'stations' })
 export class Station {
@@ -16,4 +17,7 @@ export class Station {
 
   @Column({ name: 'created_at', default: 'NOW()' })
   createdAt!: Date;
+
+  @OneToOne(() => StationType, (stationType) => stationType.stationId)
+  stationType?: StationType;
 }
