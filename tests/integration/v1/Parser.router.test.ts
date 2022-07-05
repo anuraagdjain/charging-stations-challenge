@@ -12,14 +12,16 @@ describe('Parser Router v1 Integration', function () {
     scripts.tests.forEach((testData: string, idx: number) => {
       const scriptIdx = idx + 1;
       it(`Successful - converts script ${scriptIdx} to instructions`, async function () {
-        const { data } = await axios.post(API_URL, testData, {
+        const { data: response } = await axios.post(API_URL, testData, {
           headers: { 'Content-Type': 'text/plain' },
         });
 
-        expect(data).to.be.an('array');
+        expect(response).to.be.an('object');
+        expect(response).to.have.key('data');
+        expect(response.data).to.be.an('array');
         const parsedInstruction = parsedInstructions[`test${scriptIdx}`];
 
-        data.forEach((instruction: any, index: number) => {
+        response.data.forEach((instruction: any, index: number) => {
           expect(instruction).to.have.all.keys([
             'step',
             'companies',

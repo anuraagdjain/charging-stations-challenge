@@ -6,7 +6,7 @@ export default function (parserService: any) {
     const script = req.body;
     return parserService
       .convertScriptInputToInstruction(script)
-      .then((instruction: Array<Object>) => res.json(instruction))
+      .then((instruction: Array<Object>) => res.json({ data: instruction }))
       .catch(next);
   });
 
