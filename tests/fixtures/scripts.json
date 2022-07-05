@@ -1,0 +1,6 @@
+{
+  "tests": [
+    "Begin\nStart station 1\nWait 5\nStart station 2\nWait 10\nStart station all\nWait 10\nStop station 2\nWait 10\nStop station 3\nWait 5\nStop station all\nEnd",
+    "Begin\nStart station 1\nWait 5\nStart station 2\nEnd"
+  ]
+}

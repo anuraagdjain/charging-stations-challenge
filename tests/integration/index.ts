@@ -29,11 +29,26 @@ beforeEach('seed', async function () {
   await this.db.getRepository(Station).save([
     {
       name: 'station 1',
-      companyId: 1,
+      companyId: 3,
       active: true,
     },
     {
       name: 'station 2',
+      companyId: 2,
+      active: true,
+    },
+    {
+      name: 'station 3',
+      companyId: 2,
+      active: true,
+    },
+    {
+      name: 'station 4',
+      companyId: 3,
+      active: true,
+    },
+    {
+      name: 'station 5',
       companyId: 1,
       active: true,
     },
@@ -41,9 +56,29 @@ beforeEach('seed', async function () {
 
   await this.db.getRepository(StationType).save([
     {
-      name: 'StationType 2',
+      name: 'StationType 1',
+      stationId: 1,
+      maxPower: 10,
+    },
+    {
+      name: 'StationType 1',
       stationId: 2,
-      maxPower: 15,
+      maxPower: 10,
+    },
+    {
+      name: 'StationType 1',
+      stationId: 3,
+      maxPower: 10,
+    },
+    {
+      name: 'StationType 1',
+      stationId: 4,
+      maxPower: 10,
+    },
+    {
+      name: 'StationType 1',
+      stationId: 5,
+      maxPower: 10,
     },
   ]);
 });

@@ -10,6 +10,8 @@ const app: Express = express();
 const port = config.get('server.port');
 
 app.use(express.json());
+app.use(express.text());
+
 app.get('/healthcheck', (req: Request, res: Response, next: any) => res.json({ time: new Date().getTime() }));
 
 MySqlDataSource.initialize().then((DB: DataSource) => {
@@ -21,6 +23,7 @@ MySqlDataSource.initialize().then((DB: DataSource) => {
   app.use('/api/v1/companies', v1Routes.companyRouter);
   app.use('/api/v1/stations', v1Routes.stationRouter);
   app.use('/api/v1/station-types', v1Routes.stationTypeRouter);
+  app.use('/api/v1/parser', v1Routes.parserRouter);
 
   app.use(function (err: any, req: Request, res: Response, next: any) {
     logger.error(`Fatal error ${err.message} - ${err.stack}`);
