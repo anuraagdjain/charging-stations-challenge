@@ -3,6 +3,7 @@ import utc from 'dayjs/plugin/utc';
 import { In } from 'typeorm';
 import { Company } from '../db/entities/Company.entity';
 import { Station } from '../db/entities/Station.entity';
+import logger from '../utils/logger';
 dayjs.extend(utc);
 
 interface CompanyStationData {
@@ -115,6 +116,33 @@ export default (services: any) => {
     return totalChargingPower;
   }
 
+  function removeStationFromCache(stationId: string, caches: any, companyStationMap: any) {
+    const station = caches.stationsCache[stationId];
+    const company = caches.companiesCache[station.companyId];
+    companyStationMap[company.id].delete(+stationId);
+    if (company.parentId) {
+      companyStationMap[company.parentId].delete(+stationId);
+    }
+  }
+
+  function removeStation(
+    inputStationId: string,
+    visitedStations: Set<number>,
+    stationsCache: any,
+    companiesCache: any,
+    companyStationMap: any
+  ) {
+    if (inputStationId === 'all') {
+      visitedStations.clear();
+      Object.keys(stationsCache).forEach((stationId: string) => {
+        removeStationFromCache(stationId, { stationsCache, companiesCache }, companyStationMap);
+      });
+    } else {
+      visitedStations.delete(+inputStationId);
+      removeStationFromCache(inputStationId, { stationsCache, companiesCache }, companyStationMap);
+    }
+  }
+
   async function convertToInstructions(scriptInstructions: string[]): Promise<Instruction[]> {
     let payload: Instruction[] = [];
     const companiesCache: any = {};
@@ -143,6 +171,20 @@ export default (services: any) => {
           timestamp: dayjs.utc().unix(),
           totalChargingPower,
         });
+      } else if (instructionType.toLocaleLowerCase() === 'stop') {
+        removeStation(inputStationId, visitedStations, stationsCache, companiesCache, companyStationMap);
+
+        const totalChargingPower = computeTotalChargingPower(visitedStations, stationsCache);
+
+        const companiesPayload = generateCompaniesPayload(companyStationMap, stationsCache);
+
+        payload.push({
+          step: instruction.join(' '),
+          companies: companiesPayload,
+          totalChargingStations: Array.from(visitedStations),
+          timestamp: dayjs.utc().unix(),
+          totalChargingPower,
+        });
       }
     }
 
@@ -155,9 +197,18 @@ export default (services: any) => {
     let currentTime = dayjs.utc();
 
     scriptInstructions.forEach((scriptInput: string) => {
-      const [instructionType] = scriptInput.split(' ');
+      logger.info(`Processing instruction - ${scriptInput}`);
+      const [instructionType, arg2] = scriptInput.split(' ');
       switch (instructionType.toLowerCase()) {
         case 'begin': {
+          const instruction: Instruction = {
+            step: scriptInput,
+            companies: [],
+            totalChargingStations: [],
+            totalChargingPower: 0,
+            timestamp: currentTime.unix(),
+          };
+          payload.push(instruction);
           break;
         }
         case 'start':
@@ -171,9 +222,23 @@ export default (services: any) => {
           break;
         }
         case 'wait': {
+          if (!isNaN(Number(arg2))) {
+            currentTime = currentTime.add(Number(arg2), 'seconds');
+          } else {
+            logger.warn('Invalid value given for Wait command');
+          }
           break;
         }
         case 'end': {
+          const previousPayload = payload[payload.length - 1];
+          const instruction: Instruction = {
+            step: scriptInput,
+            companies: previousPayload?.companies,
+            totalChargingStations: previousPayload?.totalChargingStations,
+            totalChargingPower: previousPayload?.totalChargingPower ?? 0,
+            timestamp: currentTime.unix(),
+          };
+          payload.push(instruction);
           break;
         }
         default:
