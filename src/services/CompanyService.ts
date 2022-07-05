@@ -10,7 +10,7 @@ export default (DB: DataSource) => {
   return {
     find: (id: number) => companyRepository.findOne({ where: { id } }),
     findWithChildrens: (id: number) => companyRepository.find({ where: [{ id }, { parentId: id }] }),
-    get: () => companyRepository.find(),
+    get: (filter: any) => companyRepository.find({ ...filter }),
     create: (payload: Partial<Company>) =>
       companyRepository.save(payload).catch((err: any) => {
         logger.error(`Failed to create company ${err}`);

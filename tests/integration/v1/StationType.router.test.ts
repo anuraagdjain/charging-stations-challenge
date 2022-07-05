@@ -13,7 +13,7 @@ describe('StationTypes Router v1 Integration', function () {
       const { data } = await axios.get(API_URL);
 
       expect(data).to.be.an('array');
-      expect(data.length).to.be.eq(1);
+      expect(data.length).to.be.eq(5);
 
       data.forEach((row: StationType) => {
         expect(row).to.have.keys(['id', 'name', 'stationId', 'maxPower', 'createdAt']);
@@ -120,21 +120,21 @@ describe('StationTypes Router v1 Integration', function () {
       const stationTypeId = 999;
 
       let result = await this.db.query('SELECT * FROM station_types;');
-      expect(result.length).to.be.eq(1);
+      expect(result.length).to.be.eq(5);
 
       const { status } = await axios.delete(`${API_URL}/${stationTypeId}`);
 
       expect(status).to.be.eq(200);
 
       result = await this.db.query('SELECT * FROM station_types;');
-      expect(result.length).to.be.eq(1);
+      expect(result.length).to.be.eq(5);
     });
   });
 
   describe('PUT /station-types/:id', function () {
     it('Successful - Update a station-type in the database', async function () {
       const stationTypeId = 1;
-      const oldName = 'StationType 2';
+      const oldName = 'StationType 1';
       const payload = { name: 'station-type 55' };
 
       const [beforeUpdate] = await this.db.query('SELECT * FROM station_types where id = ?', [stationTypeId]);

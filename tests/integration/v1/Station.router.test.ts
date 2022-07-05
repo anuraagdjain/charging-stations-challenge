@@ -12,7 +12,7 @@ describe('Stations Router v1 Integration', function () {
       const { data } = await axios.get(API_URL);
 
       expect(data).to.be.an('array');
-      expect(data.length).to.be.eq(2);
+      expect(data.length).to.be.eq(5);
 
       data.forEach((row: Station) => {
         expect(row).to.have.keys(['id', 'name', 'companyId', 'createdAt', 'active']);
@@ -28,7 +28,7 @@ describe('Stations Router v1 Integration', function () {
   describe('POST /stations', function () {
     it('Successful - create a station & sets active as true', async function () {
       const payload = {
-        name: 'Station 5',
+        name: 'Station 9',
         companyId: 2,
       };
 
@@ -72,16 +72,19 @@ describe('Stations Router v1 Integration', function () {
   });
 
   describe('DELETE /stations/:id', function () {
-    it('Successful - Delete a station in the database', async function () {
-      const stationId = 1;
-      let [result] = await this.db.query('SELECT * FROM stations where id = ?', [stationId]);
+    it('Successful - Delete a station with no station-type in the database', async function () {
+      const { data: station } = await axios.post(`${API_URL}`, {
+        name: 'Station 9',
+        companyId: 2,
+      });
+      let [result] = await this.db.query('SELECT * FROM stations where id = ?', [station.id]);
 
-      expect(result.id).to.be.eq(stationId);
+      expect(result.id).to.be.eq(station.id);
 
-      const { status } = await axios.delete(`${API_URL}/${stationId}`);
+      const { status } = await axios.delete(`${API_URL}/${station.id}`);
       expect(status).to.be.eq(200);
 
-      result = await this.db.query('SELECT * FROM stations where id = ?', [stationId]);
+      result = await this.db.query('SELECT * FROM stations where id = ?', [station.id]);
       expect(result.length).to.be.eq(0);
     });
 
@@ -89,14 +92,14 @@ describe('Stations Router v1 Integration', function () {
       const stationId = 999;
 
       let result = await this.db.query('SELECT * FROM stations;');
-      expect(result.length).to.be.eq(2);
+      expect(result.length).to.be.eq(5);
 
       const { status } = await axios.delete(`${API_URL}/${stationId}`);
 
       expect(status).to.be.eq(200);
 
       result = await this.db.query('SELECT * FROM stations;');
-      expect(result.length).to.be.eq(2);
+      expect(result.length).to.be.eq(5);
     });
   });
 

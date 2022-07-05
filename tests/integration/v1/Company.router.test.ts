@@ -58,15 +58,15 @@ describe('Companies Router v1 Integration', function () {
 
   describe('DELETE /companies/:id', function () {
     it('Successful - Delete a company in the database', async function () {
-      const companyId = 3;
-      let [result] = await this.db.query('SELECT * FROM companies where id = ?', [companyId]);
+      const { data: company } = await axios.post(`${API_URL}`, { name: 'Test Company', parentId: null });
+      let [result] = await this.db.query('SELECT * FROM companies where id = ?', [company.id]);
 
-      expect(result.id).to.be.eq(companyId);
+      expect(result.id).to.be.eq(company.id);
 
-      const { status } = await axios.delete(`${API_URL}/${companyId}`);
+      const { status } = await axios.delete(`${API_URL}/${company.id}`);
       expect(status).to.be.eq(200);
 
-      result = await this.db.query('SELECT * FROM companies where id = ?', [companyId]);
+      result = await this.db.query('SELECT * FROM companies where id = ?', [company.id]);
       expect(result.length).to.be.eq(0);
     });
 
@@ -124,7 +124,7 @@ describe('Companies Router v1 Integration', function () {
       const { data } = await axios.get(`${API_URL}/${companyId}/stations`);
 
       expect(data).to.be.an('array');
-      expect(data.length).to.be.eq(2);
+      expect(data.length).to.be.eq(5);
 
       data.forEach((row: any) => {
         expect(row).to.have.keys(['stationId', 'stationName', 'maxPower']);
