@@ -34,7 +34,7 @@ To run with production build use `npm run start` which will clean, generate a ne
 #### Task 1
  There are CRUD endpoints for `/companies`, `/stations`, `/station-types` which acts as interface between the database and the user/client. All the api endpoints are versioned with `v1` and have `api` as prefix. Example : `api/v1/companies` is an endpoint. Any client can use the endpoints according to their needs. There is also an endpoint `/companies/:id/stations` which returns stations data of that company and all of its children.
 
-The company table also has a `parent_id` column which is populated if a child company is being inserted. If let empty, then the given company is a parent company. This would allow us to have recursive of relations in company and it's unto the application layer to determine what level is best, so that too much complexity can be avoided. Currently I have focused on `Company -> [Children Companies]` and have not thought beyond this, as it was out of scope for the task.
+The company table also has a `parent_id` column which is populated if a child company is being inserted. If let empty, then the given company is a parent company. This would allow us to have recursive of relations in company and it's upto the application layer to determine what level is best, so that too much complexity can be avoided. Currently I have focused on `Company -> [Children Companies]` and have not thought beyond this, as it was out of scope for the task.
 
 Most table(s) have `active` and `createdAt` to which would allow us to deactivate a company, station and also know when the data was populated in the database. 
 
