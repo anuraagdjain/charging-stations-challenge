@@ -104,5 +104,35 @@
       "totalChargingStations": [1, 2],
       "totalChargingPower": 20
     }
+  ],
+  "test3": [
+    { "step": "Begin", "companies": [], "totalChargingStations": [], "totalChargingPower": 0, "timestamp": 1657091267 },
+    {
+      "step": "Start station 5",
+      "companies": [{ "id": 1, "chargingStations": [5], "chargingPower": 10 }],
+      "totalChargingStations": [5],
+      "timestamp": 1657091267,
+      "totalChargingPower": 10
+    },
+    {
+      "step": "Start station 4",
+      "companies": [
+        { "id": 1, "chargingStations": [5, 4], "chargingPower": 20 },
+        { "id": 3, "chargingStations": [4], "chargingPower": 10 }
+      ],
+      "totalChargingStations": [5, 4],
+      "timestamp": 1657091287,
+      "totalChargingPower": 20
+    },
+    {
+      "step": "End",
+      "companies": [
+        { "id": 1, "chargingStations": [5, 4], "chargingPower": 20 },
+        { "id": 3, "chargingStations": [4], "chargingPower": 10 }
+      ],
+      "totalChargingStations": [5, 4],
+      "totalChargingPower": 20,
+      "timestamp": 1657091287
+    }
   ]
 }
